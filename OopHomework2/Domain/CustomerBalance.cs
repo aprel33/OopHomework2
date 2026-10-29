@@ -1,32 +1,47 @@
 ﻿
 namespace Marketplace.Domain;
 
-public readonly struct CustomerBalance
+public struct CustomerBalance
 {
-    public decimal Money { get; }
-    public decimal Bonuses { get; }
-    public decimal AllowedBonusShare { get; }
+    public decimal Money { get; init; }
+    public decimal Bonuses { get; init; }
+    public decimal AllowedBonusShare { get; init; }
 
     public CustomerBalance(
         decimal money,
         decimal bonuses,
         decimal allowedBonusShare)
     {
-        if (money < 0)
-            throw new ArgumentOutOfRangeException(
-                nameof(money), "Денежный баланс не может быть отрицательным.");
-
-        if (bonuses < 0)
-            throw new ArgumentOutOfRangeException(
-                nameof(bonuses), "Бонусный баланс не может быть отрицательным.");
-
-        if (allowedBonusShare < 0 || allowedBonusShare > 0.5m)
-            throw new ArgumentOutOfRangeException(
-                nameof(allowedBonusShare),
-                "Доля оплаты бонусами должна быть от 0 до 0.5.");
+        ValidateMoney(money);
+        ValidateBonuses(bonuses);
+        ValidateAllowedBonusShare(allowedBonusShare);
 
         Money = money;
         Bonuses = bonuses;
         AllowedBonusShare = allowedBonusShare;
+    }
+
+    private static void ValidateMoney(decimal money)
+    {
+        if (money < 0)
+            throw new ArgumentOutOfRangeException(
+                nameof(money),
+                "Денежный баланс не может быть отрицательным.");
+    }
+
+    private static void ValidateBonuses(decimal bonuses)
+    {
+        if (bonuses < 0)
+            throw new ArgumentOutOfRangeException(
+                nameof(bonuses),
+                "Бонусный баланс не может быть отрицательным.");
+    }
+
+    private static void ValidateAllowedBonusShare(decimal share)
+    {
+        if (share < 0 || share > 0.5m)
+            throw new ArgumentOutOfRangeException(
+                nameof(share),
+                "Доля оплаты бонусами должна быть от 0 до 0.5.");
     }
 }
