@@ -14,3 +14,4 @@ E:\Progs\OopHomework2\OopHomework2\obj\Debug\net10.0\OopHomework2.pdb
 E:\Progs\OopHomework2\OopHomework2\obj\Debug\net10.0\OopHomework2.genruntimeconfig.cache
 E:\Progs\OopHomework2\OopHomework2\obj\Debug\net10.0\ref\OopHomework2.dll
 E:\Progs\OopHomework2\OopHomework2\obj\Debug\net10.0\OopHomew.3C93E2F5.Up2Date
+E:\Progs\OopHomework2\OopHomework2\obj\Debug\net10.0\OopHomework2.sourcelink.json

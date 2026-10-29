@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OopHomework2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75038d2579c5871a07b3739d3e61ed9e10cf5713")]
 [assembly: System.Reflection.AssemblyProductAttribute("OopHomework2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OopHomework2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
