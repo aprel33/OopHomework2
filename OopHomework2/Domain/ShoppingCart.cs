@@ -10,8 +10,7 @@ public class ShoppingCart
 
     public int Id { get; }
     public int UserId { get; }
-    public IReadOnlyList<CartItem> Items => _items;
-
+    public IReadOnlyList<CartItem> Items => _items.AsReadOnly();
     public ShoppingCart(int id, int userId)
     {
         if (id <= 0)
