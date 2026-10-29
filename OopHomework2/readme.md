@@ -15,7 +15,7 @@
 
 **Репозиторий проекта:** [aprel33/OopHomework2](https://github.com/aprel33/OopHomework2)
 
-**Исходный код проекта:** [aprel33/OopHomework2/tree/main/OopHomework2]https://github.com/aprel33/OopHomework2/tree/main/OopHomework2
+**Исходный код проекта:** [aprel33/OopHomework2/tree/main/OopHomework2](https://github.com/aprel33/OopHomework2/tree/main/OopHomework2)
 
 **Язык программирования:** C#
 
