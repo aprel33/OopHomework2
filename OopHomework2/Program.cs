@@ -2,6 +2,9 @@
 using Marketplace.Domain;
 using Marketplace.Services;
 
+Console.InputEncoding = System.Text.Encoding.UTF8;
+Console.OutputEncoding = System.Text.Encoding.UTF8;
+
 var customer = new UserProfile(
     id: 1,
     name: "Григорий",
