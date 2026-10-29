@@ -1,11 +1,11 @@
 ﻿
 namespace Marketplace.Domain;
 
-public readonly struct CustomerBalance
+public struct CustomerBalance
 {
-    public decimal Money { get; }
-    public decimal Bonuses { get; }
-    public decimal AllowedBonusShare { get; }
+    public decimal Money { get; set; }
+    public decimal Bonuses { get; set; }
+    public decimal AllowedBonusShare { get; set; }
 
     public CustomerBalance(
         decimal money,
@@ -14,11 +14,13 @@ public readonly struct CustomerBalance
     {
         if (money < 0)
             throw new ArgumentOutOfRangeException(
-                nameof(money), "Денежный баланс не может быть отрицательным.");
+                nameof(money),
+                "Денежный баланс не может быть отрицательным.");
 
         if (bonuses < 0)
             throw new ArgumentOutOfRangeException(
-                nameof(bonuses), "Бонусный баланс не может быть отрицательным.");
+                nameof(bonuses),
+                "Бонусный баланс не может быть отрицательным.");
 
         if (allowedBonusShare < 0 || allowedBonusShare > 0.5m)
             throw new ArgumentOutOfRangeException(
