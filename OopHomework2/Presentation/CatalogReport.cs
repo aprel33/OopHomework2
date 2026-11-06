@@ -1,25 +1,43 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Marketplace.Domain;
 
 namespace Marketplace.Presentation;
 
 public class CatalogReport
 {
-    // Расчёт средней стоимости товаров.
     public decimal GetAveragePrice(IEnumerable<Product> products)
     {
-        // TODO участника 3:
-        // Рассчитать среднюю цену товаров.
-        throw new NotImplementedException();
-    }
+        if (products == null)
+            throw new ArgumentNullException(nameof(products));
 
-    // Формирование текстовой сводки каталога.
+        var productList = products.ToList();
+
+        if (productList.Count == 0)
+            return 0m;
+
+        return productList.Average(p => (decimal)p.GetPrice());
+    }
     public string GetSummary(IEnumerable<Product> products)
     {
-        // TODO участника 3:
-        // Подготовить сводку с количеством товаров
-        // и информацией о ценах.
-        throw new NotImplementedException();
+        if (products == null)
+            throw new ArgumentNullException(nameof(products));
+
+        var productList = products.ToList();
+
+        if (productList.Count == 0)
+            return "Каталог пуст.";
+
+        int count = productList.Count;
+        decimal averagePrice = GetAveragePrice(productList);
+        int minPrice = productList.Min(p => p.GetPrice());
+        int maxPrice = productList.Max(p => p.GetPrice());
+
+        return $"Количество товаров: {count}\n" +
+               $"Средняя цена: {averagePrice:F2} у.е.\n" +
+               $"Минимальная цена: {minPrice} у.е.\n" +
+               $"Максимальная цена: {maxPrice} у.е.";
     }
 }
