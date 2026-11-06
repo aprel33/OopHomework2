@@ -20,7 +20,6 @@ public class CatalogPrinter
             Console.WriteLine(PrepareLine(product));
         }
     }
-
     public void PrintTop(IEnumerable<Product> products, int count)
     {
         if (products == null)
