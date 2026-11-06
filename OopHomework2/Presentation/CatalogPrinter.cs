@@ -20,6 +20,7 @@ public class CatalogPrinter
             Console.WriteLine(PrepareLine(product));
         }
     }
+
     public void PrintTop(IEnumerable<Product> products, int count)
     {
         if (products == null)
@@ -39,6 +40,7 @@ public class CatalogPrinter
             Console.WriteLine(PrepareLine(product));
         }
     }
+
     private string PrepareLine(Product product)
     {
         return $"ID: {product.GetId()} | " +
@@ -46,6 +48,7 @@ public class CatalogPrinter
                $"Цена: {PriceFormatter.Format(product.GetPrice())}";
     }
 }
+
 file static class PriceFormatter
 {
     public static string Format(int price)
