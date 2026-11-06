@@ -1,38 +1,104 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
 using Marketplace.Domain;
 
-namespace Marketplace.Presentation;
+namespace Marketplace.DataAccess;
 
-public class CatalogPrinter
+public class FileProductRepository : IProductRepository
 {
-    // Вывод всех товаров.
-    public void PrintAll(IEnumerable<Product> products)
+    private readonly string filePath;
+
+    public FileProductRepository(string filePath = "products.json")
     {
-        // TODO участника 3:
-        // Перебрать товары и вывести каждый через PrepareLine.
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(filePath))
+            throw new ArgumentException(
+                "Путь к файлу не может быть пустым.",
+                nameof(filePath));
+
+        this.filePath = filePath;
     }
 
-    // Вывод самых дорогих товаров.
-    public void PrintTop(IEnumerable<Product> products, int count)
+    // Сохранение товаров в файл.
+    public void Save(IEnumerable<Product> products)
     {
-        // TODO участника 3:
-        // Отсортировать товары по цене по убыванию
-        // и вывести count самых дорогих.
-        throw new NotImplementedException();
+        if (products == null)
+            throw new ArgumentNullException(nameof(products));
+
+        string json = Serialize(products);
+
+        string? directory = Path.GetDirectoryName(
+            Path.GetFullPath(filePath));
+
+        if (!string.IsNullOrEmpty(directory))
+            Directory.CreateDirectory(directory);
+
+        File.WriteAllText(filePath, json);
     }
 
-    // Подготовка строки с информацией о товаре.
-    private string PrepareLine(Product product)
+    // Загрузка товаров из файла.
+    public List<Product> Load()
     {
-        // TODO участника 3.
-        throw new NotImplementedException();
-    }
-}
+        if (!File.Exists(filePath))
+            return new List<Product>();
 
-// Вспомогательный тип виден только в этом файле.
-file static class PriceFormatter
-{
-    public static string Format(int price) => $"{price} у.е.";
+        string json = File.ReadAllText(filePath);
+
+        return Deserialize(json);
+    }
+
+    // Преобразование товаров в JSON.
+    private string Serialize(IEnumerable<Product> products)
+    {
+        var data = products.Select(product => new ProductData
+        {
+            Id = product.GetId(),
+            Title = product.GetTitle(),
+            Price = product.GetPrice()
+        }).ToList();
+
+        return JsonSerializer.Serialize(
+            data,
+            new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+    }
+
+    // Восстановление товаров из JSON.
+    private List<Product> Deserialize(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return new List<Product>();
+
+        try
+        {
+            List<ProductData>? data =
+                JsonSerializer.Deserialize<List<ProductData>>(json);
+
+            if (data == null)
+                return new List<Product>();
+
+            return data.Select(item =>
+                new Product(item.Id, item.Title, item.Price)
+            ).ToList();
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidDataException(
+                "Ошибка чтения каталога из JSON-файла.", ex);
+        }
+    }
+
+    // Промежуточная модель для JSON.
+    private class ProductData
+    {
+        public int Id { get; set; }
+
+        public string Title { get; set; } = string.Empty;
+
+        public int Price { get; set; }
+    }
 }
