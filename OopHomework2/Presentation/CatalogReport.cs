@@ -20,6 +20,7 @@ public class CatalogReport
 
         return productList.Average(p => (decimal)p.GetPrice());
     }
+
     public string GetSummary(IEnumerable<Product> products)
     {
         if (products == null)
