@@ -1,8 +1,18 @@
-﻿using Marketplace.Domain;
+﻿
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Marketplace.Domain;
 using Marketplace.Services;
+using Marketplace.DataAccess;
+using Marketplace.Presentation;
 
-Console.InputEncoding = System.Text.Encoding.UTF8;
-Console.OutputEncoding = System.Text.Encoding.UTF8;
+Console.InputEncoding = Encoding.UTF8;
+Console.OutputEncoding = Encoding.UTF8;
+
+// ==========================================
+// 1. Интернет-магазин и покупатель
+// ==========================================
 
 var customer = new UserProfile(
     id: 1,
@@ -25,7 +35,10 @@ Console.WriteLine(
     $"Персональная скидка: {(1m - customer.PersonalDiscount) * 100m:F0}%");
 Console.WriteLine();
 
-// Демонстрация ссылочного типа.
+// ==========================================
+// 2. Ссылочные типы
+// ==========================================
+
 Console.WriteLine("=== Ссылочные типы ===");
 
 var sameCustomer = customer;
@@ -37,23 +50,27 @@ Console.WriteLine(
     $"Баланс через sameCustomer: {sameCustomer.MoneyBalance:F2} УЕ");
 Console.WriteLine();
 
-// Создаём товары.
+// ==========================================
+// 3. Информация о товарах
+// ==========================================
+
 var plate = new Product(1, "Тарелка", 1000);
 var cutlery = new Product(2, "Приборы", 2000);
 
-// Демонстрация методов Product.
 Console.WriteLine("=== Информация о товарах ===");
 Console.WriteLine(plate.GetInfo());
 Console.WriteLine(cutlery.GetInfo());
 Console.WriteLine();
 
-// Создаём основную корзину.
+// ==========================================
+// 4. Состав заказа и расчёт стоимости
+// ==========================================
+
 var cart = new ShoppingCart(1, customer.Id);
 
 cart.AddItem(new CartItem(1, plate.GetId(), 3));
 cart.AddItem(new CartItem(2, cutlery.GetId(), 2));
 
-// Рассчитываем стоимость заказа.
 decimal originalPrice =
     plate.GetPrice() * 3 + cutlery.GetPrice() * 2;
 
@@ -69,12 +86,14 @@ Console.WriteLine(price.ShowDiscountAmount());
 Console.WriteLine(price.ShowFinalPrice());
 Console.WriteLine();
 
-// Создаём сервис оплаты.
+// ==========================================
+// 5. Неудачная оплата и повторная попытка
+// ==========================================
+
 var paymentService = new PaymentService();
 
 Console.WriteLine("=== Неудачная оплата и повторная попытка ===");
 
-// Создаём одну корзину для обеих попыток.
 var purchaseCart = new ShoppingCart(2, customer.Id);
 purchaseCart.AddItem(new CartItem(3, plate.GetId(), 20));
 
@@ -86,7 +105,6 @@ Console.WriteLine($"Стоимость заказа: {purchasePrice.FinalPrice:F
 
 CustomerBalance balance = customer.GetCustomerBalance();
 
-// Первая попытка: денег недостаточно.
 bool firstAttempt = paymentService.TryPay(
     customer,
     purchaseCart,
@@ -101,7 +119,10 @@ Console.WriteLine($"Бонусный баланс: {customer.BonusBalance:F2} У
 Console.WriteLine($"Позиций в корзине: {purchaseCart.Items.Count}");
 Console.WriteLine();
 
-// Пополняем баланс.
+// ==========================================
+// 6. Пополнение баланса
+// ==========================================
+
 Console.WriteLine("=== Пополнение баланса ===");
 
 customer.AddMoney(10000m);
@@ -110,7 +131,10 @@ Console.WriteLine(
     $"Денежный баланс после пополнения: {customer.MoneyBalance:F2} УЕ");
 Console.WriteLine();
 
-// Повторяем оплату той же корзины.
+// ==========================================
+// 7. Повторная попытка оплаты
+// ==========================================
+
 Console.WriteLine("=== Повторная попытка оплаты ===");
 
 balance = customer.GetCustomerBalance();
@@ -130,7 +154,10 @@ Console.WriteLine($"Покупок в истории: {customer.CompletedPurchas
 Console.WriteLine($"Позиций в корзине: {purchaseCart.Items.Count}");
 Console.WriteLine();
 
-// Демонстрация структуры и оператора with.
+// ==========================================
+// 8. Тип значения CustomerBalance
+// ==========================================
+
 Console.WriteLine("=== Тип значения CustomerBalance ===");
 
 var modifiedBalance = balanceAfterPayment with
@@ -153,7 +180,11 @@ Console.WriteLine(
 Console.WriteLine(
     $"Денежный баланс в профиле: {customer.MoneyBalance:F2} УЕ");
 
+Console.WriteLine();
 
+// ==========================================
+// 9. Проверка каталога
+// ==========================================
 
 Console.WriteLine("=== Проверка каталога ===");
 
@@ -176,8 +207,11 @@ bool removed = catalog.Remove("Приборы");
 Console.WriteLine($"Удаление товара: {removed}");
 Console.WriteLine($"Товаров после удаления: {catalog.GetCount()}");
 
+// ==========================================
+// 10. Проверка дубликатов
+// ==========================================
 
-// Проверка защиты от дубликатов.
+Console.WriteLine();
 Console.WriteLine("=== Проверка дубликатов ===");
 
 try
@@ -192,6 +226,9 @@ catch (InvalidOperationException ex)
 Console.WriteLine($"Количество товаров: {catalog.GetCount()}");
 Console.WriteLine();
 
+// ==========================================
+// 11. Проверка инкапсуляции
+// ==========================================
 
 Console.WriteLine("=== Проверка инкапсуляции ===");
 
@@ -199,10 +236,89 @@ var productsCopy = catalog.GetProducts();
 
 Console.WriteLine($"Товаров в копии: {productsCopy.Count}");
 
-// Изменяем полученную копию.
 if (productsCopy is List<Product> mutableCopy)
 {
     mutableCopy.Clear();
 }
 
 Console.WriteLine($"Товаров в каталоге: {catalog.GetCount()}");
+Console.WriteLine();
+
+// ==========================================
+// 12. Подготовка отдельного каталога
+// ==========================================
+
+Console.WriteLine("=== Подготовка каталога для сохранения ===");
+
+var fullCatalog = new Catalog();
+
+fullCatalog.Add(plate);
+fullCatalog.Add(cutlery);
+
+Console.WriteLine($"Товаров подготовлено: {fullCatalog.GetCount()}");
+Console.WriteLine();
+
+// ==========================================
+// 13. Сохранение и загрузка каталога
+// ==========================================
+
+Console.WriteLine("=== Работа с FileProductRepository ===");
+
+IProductRepository repository =
+    new FileProductRepository("products.json");
+
+// Сохраняем товары в JSON-файл.
+repository.Save(fullCatalog.GetProducts());
+
+Console.WriteLine("Каталог сохранён в файл products.json.");
+
+// Загружаем товары из файла.
+List<Product> loadedProducts = repository.Load();
+
+Console.WriteLine($"Загружено товаров: {loadedProducts.Count}");
+
+foreach (Product product in loadedProducts)
+{
+    Console.WriteLine(product.GetInfo());
+}
+
+Console.WriteLine();
+
+// ==========================================
+// 14. Вывод каталога через CatalogPrinter
+// ==========================================
+
+Console.WriteLine("=== Работа с CatalogPrinter ===");
+
+var printer = new CatalogPrinter();
+
+// Вывод всех товаров.
+printer.PrintAll(loadedProducts);
+
+Console.WriteLine();
+
+// Вывод двух самых дорогих товаров.
+printer.PrintTop(loadedProducts, 2);
+
+Console.WriteLine();
+
+// ==========================================
+// 15. Формирование отчёта CatalogReport
+// ==========================================
+
+Console.WriteLine("=== Работа с CatalogReport ===");
+
+var report = new CatalogReport();
+
+decimal averagePrice = report.GetAveragePrice(loadedProducts);
+
+Console.WriteLine(
+    $"Средняя цена товаров: {averagePrice:F2} у.е.");
+
+Console.WriteLine();
+Console.WriteLine("=== Сводка каталога ===");
+
+Console.WriteLine(report.GetSummary(loadedProducts));
+
+Console.WriteLine();
+Console.WriteLine("=== Демонстрация завершена ===");
